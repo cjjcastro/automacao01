@@ -1,0 +1,34 @@
+---
+
+- name: Setup hosts
+  gather_facts: false
+  hosts: hosts
+  remote_user: root
+  tasks:
+    - name: Changing root password
+      user:
+        name: root
+        password: "{{ 'comosaidonano' | password_hash('sha512', 'abobora') }}"
+
+    - name: disable firewalld.
+     service:
+       name: firewalld
+       state: stopped
+       enabled: False
+    - name: timezone to sao paulo
+      timezone:
+        name: Sao_Paulo
+    - name: start ntpd
+      systemd:
+        state: started
+        name: httpd
+    - name: create group
+      - group:
+        name: poupex
+        state: present
+      - name: add user
+        user:
+          name: devops
+          comment: devops
+          uid: 1040
+          group: poupex
